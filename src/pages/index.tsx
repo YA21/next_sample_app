@@ -1,11 +1,6 @@
 import App from '../components/App';
 
-const appStyle = {
-  'textAlign': 'center'
-}
-
 export default () => <div>
-  <h1>Next.js</h1>
-  <div>Welcome to next.js!</div>
+  <h1 style={{textAlign: 'center'}}>投資シミュレーション</h1>
   <App/>
 </div>

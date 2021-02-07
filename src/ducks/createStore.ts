@@ -16,7 +16,8 @@ export type StoreState = ReturnType<typeof preloadedState>;
 export type ReduxStore = Store<StoreState>;
 
 const createStore = () => {
-  const middlewareList = [...getDefaultMiddleware(), logger];
+  // const middlewareList = [...getDefaultMiddleware(), logger];
+  const middlewareList = [...getDefaultMiddleware()];
 
   return configureStore({
     reducer: rootReducer,

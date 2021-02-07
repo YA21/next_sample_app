@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import * as moment from 'moment'
 
 export type InvestAmountState = {
   monthlyInvestAmount: number;
   totalInvestAmount: number;
   accumulationYear: number;
   averageReturnPerYear: number;
-  investAmountArray: Array<number>;
+  investAmountArray: Array<{date: string, amount: number}>;
+  isSimulated: boolean;
 };
 
 export const initialState: InvestAmountState = {
@@ -13,7 +15,8 @@ export const initialState: InvestAmountState = {
   totalInvestAmount: 0,
   accumulationYear: 5,
   averageReturnPerYear: 4,
-  investAmountArray: [0]
+  investAmountArray: [],
+  isSimulated: false
 };
 
 const investAmountSlice = createSlice({
@@ -21,14 +24,18 @@ const investAmountSlice = createSlice({
   initialState,
   reducers: {
     calcTotalInvestAmount: (state) => {
-      let _investAmountArray = [0];
+      let _investAmountArray: Array<{date: string, amount: number}> = [{date: moment().format('YYYY-MM'), amount: 0}];
       for (let i = 0; i < state.accumulationYear * 12; i++) {
-        _investAmountArray.push(parseInt(_investAmountArray[i] * (1 + state.averageReturnPerYear/100/12) + state.monthlyInvestAmount));
+        const lastMonthResult = _investAmountArray[i];
+        const _amount = parseInt(lastMonthResult.amount * (1 + state.averageReturnPerYear/100/12) + state.monthlyInvestAmount);
+        const _date = moment(lastMonthResult.date).add(1, 'M').format('YYYY-MM');
+        _investAmountArray.push({date: _date, amount: _amount });
       }
       return {
         ...state,
         investAmountArray: _investAmountArray,
-        totalInvestAmount: _investAmountArray[_investAmountArray.length - 1]
+        totalInvestAmount: _investAmountArray[_investAmountArray.length - 1].amount,
+        isSimulated: true
       }
     },
     setMonthlyInvestAmount: (state, action: PayloadAction<number>) => {
